@@ -160,3 +160,5 @@ function select(playerChoice) {
   }
 }
 window.select = select;
+// On startup, set initial values
+resetAll();
