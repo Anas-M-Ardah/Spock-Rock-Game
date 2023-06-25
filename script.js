@@ -1,10 +1,9 @@
-import { startConfetti, stopConfetti, removeConfetti } from "./confetti.js";
+import { startConfetti, stopConfetti, removeConfetti } from './confetti.js';
 
 const playerScoreEl = document.getElementById('playerScore');
 const playerChoiceEl = document.getElementById('playerChoice');
 const computerScoreEl = document.getElementById('computerScore');
 const computerChoiceEl = document.getElementById('computerChoice');
-const resultText = document.getElementById('resultText');
 
 const playerRock = document.getElementById('playerRock');
 const playerPaper = document.getElementById('playerPaper');
@@ -18,7 +17,8 @@ const computerScissors = document.getElementById('computerScissors');
 const computerLizard = document.getElementById('computerLizard');
 const computerSpock = document.getElementById('computerSpock');
 
-const allGamesIcons = document.querySelectorAll('.far');
+const allGameIcons = document.querySelectorAll('.far');
+const resultText = document.getElementById('resultText');
 
 const choices = {
   rock: { name: 'Rock', defeats: ['scissors', 'lizard'] },
@@ -32,48 +32,47 @@ let playerScoreNumber = 0;
 let computerScoreNumber = 0;
 let computerChoice = '';
 
-// Reset all 'selected' icons
-function resetSelected(){
-  allGamesIcons.forEach((icon)=>{
+// Reset all 'selected' icons, remove confetti
+function resetSelected() {
+  allGameIcons.forEach((icon) => {
     icon.classList.remove('selected');
   });
   stopConfetti();
   removeConfetti();
 }
 
-// Reset Score & playerChoice/computerChoice
-function resetAll(){
+// Reset score & playerChoice/computerChoice
+function resetAll() {
   playerScoreNumber = 0;
   computerScoreNumber = 0;
+  playerScoreEl.textContent = playerScoreNumber;
+  computerScoreEl.textContent = computerScoreNumber;
   playerChoiceEl.textContent = '';
   computerChoiceEl.textContent = '';
-  playerScoreEl.textContent = 0;
-  computerScoreEl.textContent = 0;
-  resetSelected();
   resultText.textContent = '';
+  resetSelected();
 }
 window.resetAll = resetAll;
 
 // Random computer choice
-function computerRandomChoice(){
-  const computerChoiceNumber = Math.floor(Math.random()*5);
-  if(computerChoiceNumber === 0){
+function computerRandomChoice() {
+  const computerChoiceNumber = Math.random();
+  if (computerChoiceNumber < 0.2) {
     computerChoice = 'rock';
-  }else if(computerChoiceNumber === 1){
+  } else if (computerChoiceNumber <= 0.4) {
     computerChoice = 'paper';
-  }else if(computerChoiceNumber === 2){
+  } else if (computerChoiceNumber <= 0.6) {
     computerChoice = 'scissors';
-  }else if(computerChoiceNumber === 3){
+  } else if (computerChoiceNumber <= 0.8) {
     computerChoice = 'lizard';
-  }else if(computerChoiceNumber === 4){
+  } else {
     computerChoice = 'spock';
   }
-  console.log(computerChoice);
 }
 
 // Add 'selected' styling & computerChoice
 function displayComputerChoice() {
-  switch (computerChoice){
+  switch (computerChoice) {
     case 'rock':
       computerRock.classList.add('selected');
       computerChoiceEl.textContent = ' --- Rock';
@@ -100,41 +99,37 @@ function displayComputerChoice() {
 }
 
 // Check result, increase scores, update resultText
-function updateScore(playerChoice){
-  console.log(playerChoice, computerChoice);
-  if(playerChoice === computerChoice){
+function updateScore(playerChoice) {
+  if (playerChoice === computerChoice) {
     resultText.textContent = "It's a tie.";
-    resultText.style.color = 'black';
-  }else{
+  } else {
     const choice = choices[playerChoice];
-    if(choice.defeats.indexOf(computerChoice) !== -1){
+    if (choice.defeats.indexOf(computerChoice) > -1) {
       startConfetti();
-      resultText.textContent = "You Won!";
-      resultText.style.color = 'green';
+      resultText.textContent = 'You Won!';
       playerScoreNumber++;
       playerScoreEl.textContent = playerScoreNumber;
-    }else{
-      resultText.textContent = "You Lost!";
-      resultText.style.color = 'red';
+    } else {
+      resultText.textContent = 'You Lost!';
       computerScoreNumber++;
       computerScoreEl.textContent = computerScoreNumber;
     }
   }
 }
 
-// Call functions to proccess turn
-function checkResult(playerChoice){
+// Call functions to process turn
+function checkResult(playerChoice) {
   resetSelected();
   computerRandomChoice();
   displayComputerChoice();
   updateScore(playerChoice);
 }
 
-// Passing player selection value and styling icon
+// Passing player selection value and styling icons
 function select(playerChoice) {
   checkResult(playerChoice);
   // Add 'selected' styling & playerChoice
-  switch (playerChoice){
+  switch (playerChoice) {
     case 'rock':
       playerRock.classList.add('selected');
       playerChoiceEl.textContent = ' --- Rock';
@@ -160,5 +155,6 @@ function select(playerChoice) {
   }
 }
 window.select = select;
+
 // On startup, set initial values
 resetAll();
